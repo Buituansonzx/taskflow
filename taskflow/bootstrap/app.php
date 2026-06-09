@@ -5,6 +5,7 @@ use Apiato\Http\Middleware\ProcessETag;
 use Apiato\Http\Middleware\ValidateJsonContent;
 use App\Containers\AppSection\Authentication\UI\WEB\Controllers\HomePageController;
 use App\Containers\AppSection\Authentication\UI\WEB\Controllers\LoginController;
+use App\Containers\ClientSection\Project\Middleware\EnsureUserIsProjectRoles;
 use App\Containers\ClientSection\WorkSpace\Middleware\EnsureUserIsWorkspaceAdminOrOwner;
 use App\Ship\Middleware\ValidateAppId;
 use Illuminate\Foundation\Application;
@@ -40,6 +41,7 @@ return Application::configure(basePath: $basePath)
         });
         $middleware->alias([
             'workspace.role' => EnsureUserIsWorkspaceAdminOrOwner::class,
+            'project.manage' => EnsureUserIsProjectRoles::class,
         ]);
     })
     ->withCommands($apiato->commands())

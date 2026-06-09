@@ -25,6 +25,17 @@ final class LoginAction extends ParentAction
         $password = $data['password'];
 
         $user = User::where('email', $email)->first();
+        if (!$user || !Hash::check($password, $user->password)) {
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 401);
+        }
+
+        if (!$user->email_verified_at) {
+            return response()->json([
+                'message' => 'Email not verified',
+            ], 401);
+        }
         $roles = $user->roles()->get();
 
         if (!$user || !Hash::check($password, $user->password)) {

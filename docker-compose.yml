@@ -47,7 +47,7 @@ services:
     container_name: taskflow_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE:-taskflow}
       POSTGRES_USER: ${DB_USERNAME:-taskflow}
@@ -90,7 +90,7 @@ services:
       dockerfile: Dockerfile
     container_name: taskflow_queue
     restart: unless-stopped
-    working_dir: /var/www/html
+    working_dir: /var/www/html/taskflow
     volumes:
       - .:/var/www/html
     command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
@@ -111,7 +111,7 @@ services:
       dockerfile: Dockerfile
     container_name: taskflow_scheduler
     restart: unless-stopped
-    working_dir: /var/www/html
+    working_dir: /var/www/html/taskflow
     volumes:
       - .:/var/www/html
     command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction && sleep 60; done"

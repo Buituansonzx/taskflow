@@ -26,5 +26,5 @@ use App\Containers\ClientSection\WorkSpace\UI\API\Controllers\WorkspaceControlle
 use Illuminate\Support\Facades\Route;
 
 Route::post('workspaces/{id}/invitations', [WorkspaceController::class, 'invite'])
-    ->middleware(['auth:api']);
+    ->middleware(['auth:api', 'workspace.role:admin,owner']);
 

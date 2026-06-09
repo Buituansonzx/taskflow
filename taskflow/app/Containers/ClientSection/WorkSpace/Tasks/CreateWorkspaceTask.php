@@ -21,6 +21,8 @@ final class CreateWorkspaceTask extends ParentTask
             'owner_id' => $ownerId,
         ];
 
-        return $this->repository->create($dataWorkspace);
+        $workspace = $this->repository->create($dataWorkspace);
+
+        return $workspace;
     }
 }

@@ -43,5 +43,7 @@ final class TransferOwnershipAction extends ParentAction
             $freshCurrentUser = User::findOrFail($currentUser->id);
             $freshCurrentUser->syncRoles(['admin']);
         });
+
+        return $workspace->fresh();
     }
 }

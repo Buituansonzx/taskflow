@@ -1,10 +1,10 @@
 <?php
 
 /**
- * @apiGroup           WorkSpace
+ * @apiGroup           Project
  * @apiName            
  *
- * @api                {GET} /v1/workspaces List
+ * @api                {GET} /v1/workspaces/:id/projects Listing
  * @apiDescription     Endpoint description here...
  *
  * @apiVersion         1.0.0
@@ -22,9 +22,9 @@
  * }
  */
 
-use App\Containers\ClientSection\WorkSpace\UI\API\Controllers\WorkSpaceController;
+use App\Containers\ClientSection\Project\UI\API\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('workspaces', [WorkSpaceController::class, 'list'])
+Route::get('workspaces/{id}/projects', [ProjectController::class, 'listing'])
     ->middleware(['auth:api']);
 

@@ -18,8 +18,13 @@ final class Role extends SpatieRole implements ResourceKeyAware
         'description',
     ];
 
+    const ROLE_OWNER = 'owner';
     const ROLE_ADMIN = 'admin';
     const ROLE_MEMBER = 'member';
+
+    const ROLE_PROJECT_MANAGER = 'project-manager';
+
+    const ROLE_DEVELOPER = 'developer';
 
     public function newCollection(array $models = []): RoleCollection
     {

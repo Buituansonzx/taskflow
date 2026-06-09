@@ -5,6 +5,7 @@ namespace App\Containers\AppSection\User\Models;
 use App\Containers\AppSection\Authorization\Enums\Role as RoleEnum;
 use App\Containers\AppSection\User\Data\Collections\UserCollection;
 use App\Containers\AppSection\User\Enums\Gender;
+use App\Containers\ClientSection\Project\Models\Project;
 use App\Containers\ClientSection\WorkSpace\Models\Workspace;
 use App\Ship\Parents\Models\UserModel as ParentUserModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -73,4 +74,10 @@ final class User extends ParentUserModel
         )->withPivot('role')
         ->withTimestamps();
     }
+
+    public function projects(){
+    return $this->belongsToMany(Project::class, 'project_members')
+                ->withPivot('role')
+                ->withTimestamps();
+}
 }
