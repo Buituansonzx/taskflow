@@ -2,13 +2,15 @@
 
 namespace App\Containers\ClientSection\WorkSpace\UI\API\Transformers;
 
+use App\Containers\ClientSection\Project\UI\API\Transformers\ProjectTransformer;
 use App\Containers\ClientSection\WorkSpace\Models\Workspace;
 use App\Ship\Parents\Transformers\Transformer as ParentTransformer;
 
 final class DetailWorkspaceTransformer extends ParentTransformer
 {
     protected array $defaultIncludes = [
-        'members'
+        'members',
+        'projects'
     ];
 
     protected array $availableIncludes = [];
@@ -34,6 +36,11 @@ final class DetailWorkspaceTransformer extends ParentTransformer
     public function includeMembers(Workspace $workspace){
         $members = $workspace->members;
         return $this->collection($members, new MemberWorkspaceTransformer());
+    }
+
+    public function includeProjects(Workspace $workspace){
+        $projects = $workspace->projects;
+        return $this->collection($projects, new ProjectTransformer());
     }
 
 }

@@ -20,33 +20,32 @@ final class InviteToWorkspaceAction extends ParentAction
     }
     public function run(InviteToWorkspaceRequest $request)
     {
-        $email = $request->email;
-        $role = $request->role;
+        
         $workspaceId = $request->id;
 
-        $data = [
-            'email' => $email,
-            'role' => $role,
-            'workspace_id' => $workspaceId,
-            'invited_by' => $request->user()->id,
-        ];
-
-        $existEmail = User::where('email', $email)->first();
-        if (!$existEmail) {
-            throw new HttpException(404,'Email này chưa có tài khoản trong hệ thống');
+        foreach ($request->members as $member) {
+            $email = $member['email'];
+            $role = $member['role'];
+            $data = [
+                'email' => $email,
+                'role' => $role,
+                'workspace_id' => $workspaceId,
+                'invited_by' => $request->user()->id,
+            ];
+            $existEmail = User::where('email', $email)->first();
+            if (!$existEmail) {
+                throw new HttpException(404,'Email này chưa có tài khoản trong hệ thống');
+            }
+            $alreadyMember = DB::table('model_has_roles')
+                ->where('model_id', $existEmail->id)
+                ->where('model_type', User::class)
+                ->where('team_id', $workspaceId)
+                ->exists();
+            if ($alreadyMember) {
+                throw new HttpException(409,'User này đã là thành viên của workspace');
+            }
+            $invitation = $this->task->run($data);
+            InviteToWorkspaceEvent::dispatch($invitation);
         }
-        
-        $alreadyMember = DB::table('model_has_roles')
-            ->where('model_id', $existEmail->id)
-            ->where('model_type', User::class)
-            ->where('team_id', $workspaceId)
-            ->exists();
-        if ($alreadyMember) {
-            throw new HttpException(409,'User này đã là thành viên của workspace');
-        }
-
-        $invitation = $this->task->run($data);
-
-        InviteToWorkspaceEvent::dispatch($invitation);
     }
 }

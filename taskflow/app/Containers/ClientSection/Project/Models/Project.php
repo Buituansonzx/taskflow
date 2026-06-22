@@ -3,6 +3,7 @@
 namespace App\Containers\ClientSection\Project\Models;
 
 use App\Containers\AppSection\User\Models\User;
+use App\Containers\ClientSection\Task\Models\Tag;
 use App\Containers\ClientSection\WorkSpace\Models\Workspace;
 use App\Ship\Parents\Models\Model as ParentModel;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,5 +21,7 @@ final class Project extends ParentModel
         return $this->belongsToMany(User::class, 'project_members')->withPivot('role')->withTimestamps();
     }
 
-    
+    public function tags(){
+        return $this->hasMany(Tag::class, 'project_id', 'id');
+    }
 }
