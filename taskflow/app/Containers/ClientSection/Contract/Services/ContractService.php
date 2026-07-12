@@ -162,11 +162,13 @@ class ContractService
             // Find all text runs that are styled with red color
             $runs = $xpath->query('//w:r[w:rPr/w:color[@w:val="ff0000"] or w:rPr/w:color[@w:val="FF0000"]]');
             
+            $bbntContext = ''; // Track context across runs
+            
             foreach ($runs as $run) {
                 $tNodes = $xpath->query('.//w:t', $run);
                 foreach ($tNodes as $tNode) {
                     $originalText = $tNode->nodeValue;
-                    $newText = $this->mapBBNTRedTextToValue($originalText, $data);
+                    $newText = $this->mapBBNTRedTextToValue($originalText, $data, $bbntContext);
                     if ($newText !== null) {
                         $tNode->nodeValue = htmlspecialchars($newText);
                     }
@@ -580,7 +582,10 @@ class ContractService
         }
 
         // Table: product count "Combo 2 video"
-        if (preg_match('/^Combo\s+\d+\s+video/u', $trimmed)) {
+        if (preg_match('/^Combo\s+\d+\s+video/ui', $trimmed)) {
+            if ((int)$data['num_posts'] === 1) {
+                return '1 video';
+            }
             return preg_replace('/(\d+)/', $data['num_posts'], $trimmed);
         }
 
@@ -617,19 +622,37 @@ class ContractService
         return null;
     }
 
-    private function mapBBNTRedTextToValue(string $text, array $data): ?string
+    private function mapBBNTRedTextToValue(string $text, array $data, string &$context = ''): ?string
     {
         $trimmed = trim($text);
         if ($trimmed === '') {
             return null; // Don't modify whitespace-only runs
         }
+        
+        // Update context based on labels
+        $lowerTrimmed = mb_strtolower($trimmed);
+        if (str_contains($lowerTrimmed, 'cccd') || str_contains($lowerTrimmed, 'cmt')) $context = 'cccd';
+        elseif (str_contains($lowerTrimmed, 'mst') || str_contains($lowerTrimmed, 'thuế')) $context = 'tax';
+        elseif (str_contains($lowerTrimmed, 'điện thoại')) $context = 'phone';
+        elseif (str_contains($lowerTrimmed, 'email')) $context = 'email';
+        elseif (str_contains($lowerTrimmed, 'hộ khẩu') || str_contains($lowerTrimmed, 'địa chỉ')) $context = 'address';
+        elseif (str_contains($lowerTrimmed, 'số tk') || str_contains($lowerTrimmed, 'tài khoản') || str_contains($lowerTrimmed, 'ngân hàng')) $context = 'bank';
 
         // Colon prefixes (CCCD, Tax, Phone, Email, Bank)
         if (str_starts_with($trimmed, ':')) {
             $value = trim(substr($trimmed, 1));
             
-            // "9966861205- Vietcombank" -> Bank Account - Bank Name
-            if (str_contains($value, '- Vietcombank') || str_contains($value, '9966861205')) {
+            if ($context === 'cccd') {
+                return ': ' . $data['cccd'];
+            } elseif ($context === 'tax') {
+                return ': ' . $data['tax_code'];
+            } elseif ($context === 'phone') {
+                return ': ' . $data['phone'];
+            } elseif ($context === 'email') {
+                return ': ' . $data['email'];
+            } elseif ($context === 'address') {
+                return ':' . $data['address']; // BBNT has no space after colon for address
+            } elseif ($context === 'bank') {
                 return ': ' . $data['bank_account'] . ' - ' . $data['bank_name'];
             }
             
