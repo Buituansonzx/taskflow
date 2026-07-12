@@ -40,9 +40,25 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Fix permissions
+# ========== PHẦN MỚI THÊM CHO PRODUCTION ==========
+
+# 1. Copy TOÀN BỘ code (bao gồm cả artisan trong taskflow/)
+COPY . .
+
+# 2. Chuyển vào đúng thư mục Laravel thật để cài composer + chạy artisan hook
+WORKDIR /var/www/html/taskflow
+
+RUN composer install --no-dev --optimize-autoloader
+
 RUN addgroup -g 1000 www && adduser -u 1000 -G www -s /bin/sh -D www
+
+RUN chown -R www:www storage bootstrap/cache
+
+# ===================================================
+
+# Fix permissions
 USER www
+
 
 EXPOSE 9000
 CMD ["php-fpm"]
