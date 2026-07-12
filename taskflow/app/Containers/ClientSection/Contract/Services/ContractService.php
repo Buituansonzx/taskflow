@@ -18,13 +18,13 @@ class ContractService
      * Import Excel data into the contracts table.
      * Returns the number of imported rows.
      */
-    public function importFromExcel(bool $fresh = false): int
+    public function importFromExcel(bool $fresh = false, ?string $filePath = null): int
     {
         if ($fresh) {
             Contract::truncate();
         }
 
-        $filePath = storage_path('app/tep_hop_dong.xlsx');
+        $filePath = $filePath ?? storage_path('app/tep_hop_dong.xlsx');
         $reader = IOFactory::createReader('Xlsx');
 
         // Suppress XML parser warnings from malformed metadata in some Excel files
@@ -75,9 +75,18 @@ class ContractService
             $personalInfoRaw = (string) $sheet->getCell('AA' . $row)->getValue();
             $personalInfo = $this->parsePersonalInfo($personalInfoRaw);
 
+            $batch = (string) $sheet->getCell('B' . $row)->getValue();
+            $tiktokUsername = (string) $sheet->getCell('E' . $row)->getValue();
+            $product = (string) $sheet->getCell('N' . $row)->getValue();
+
             Contract::updateOrCreate(
-                ['excel_row' => $row],
                 [
+                    'tiktok_username' => $tiktokUsername,
+                    'product' => $product,
+                    'batch' => $batch,
+                ],
+                [
+                    'excel_row' => $row,
                     'contract_date' => $contractDate,
                     'publish_date' => $publishDate,
                     'batch' => $sheet->getCell('B' . $row)->getValue(),

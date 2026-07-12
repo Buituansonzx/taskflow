@@ -49,4 +49,27 @@ class ContractController extends WebController
 
         return response()->download($filePath, $filename)->deleteFileAfterSend(true);
     }
+
+    public function import(Request $request, ContractService $service)
+    {
+        $request->validate([
+            'excel_file' => 'required|file'
+        ]);
+
+        try {
+            $file = $request->file('excel_file');
+            
+            $fullPath = storage_path('app/tep_hop_dong_uploaded.xlsx');
+            // Move directly to the exact absolute path to bypass Laravel disk roots
+            $file->move(dirname($fullPath), basename($fullPath));
+
+            $count = $service->importFromExcel(false, $fullPath);
+
+            return redirect()->route('contracts.index')
+                ->with('success', "Đã nhập thành công {$count} hợp đồng từ file Excel.");
+        } catch (\Exception $e) {
+            return redirect()->route('contracts.index')
+                ->with('error', 'Lỗi khi nhập file: ' . $e->getMessage());
+        }
+    }
 }

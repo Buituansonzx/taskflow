@@ -8,26 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #111827;
-            --bg-card: #1a2233;
-            --bg-card-hover: #1f2a3f;
-            --bg-input: #0d1321;
-            --border-color: #2a3550;
-            --border-hover: #3b4f73;
-            --text-primary: #f0f4fc;
-            --text-secondary: #8892a8;
-            --text-muted: #5a6378;
+            --bg-primary: transparent;
+            --bg-secondary: rgba(0, 0, 0, 0.2);
+            --bg-card: rgba(0, 0, 0, 0.35);
+            --bg-card-hover: rgba(0, 0, 0, 0.45);
+            --bg-input: rgba(0, 0, 0, 0.4);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
             --accent: #6366f1;
             --accent-hover: #818cf8;
-            --accent-glow: rgba(99, 102, 241, 0.25);
-            --success: #10b981;
-            --success-bg: rgba(16, 185, 129, 0.12);
-            --warning: #f59e0b;
-            --warning-bg: rgba(245, 158, 11, 0.12);
-            --danger: #ef4444;
-            --cyan: #06b6d4;
-            --cyan-bg: rgba(6, 182, 212, 0.1);
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --success: #34d399;
+            --success-bg: rgba(16, 185, 129, 0.2);
+            --warning: #fbbf24;
+            --warning-bg: rgba(245, 158, 11, 0.2);
+            --danger: #f87171;
+            --cyan: #22d3ee;
+            --cyan-bg: rgba(6, 182, 212, 0.2);
         }
 
         * {
@@ -59,20 +59,7 @@
             z-index: -2;
         }
 
-        /* Glassmorphism Overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(10, 14, 26, 0.75) 0%, rgba(17, 24, 39, 0.65) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: -1;
-            pointer-events: none;
-        }
+
 
         .container {
             max-width: 1440px;
@@ -143,6 +130,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
         }
 
         .stat-card::before {
@@ -184,11 +173,20 @@
         .stat-card--pending .stat-card__value { color: var(--warning); }
         .stat-card--done .stat-card__value { color: var(--success); }
 
+        /* Controls container */
+        .controls-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
         /* Search bar */
         .search-bar {
             display: flex;
             gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            flex: 1;
+            min-width: 300px;
         }
 
         .search-bar__input-wrapper {
@@ -216,6 +214,8 @@
             font-size: 0.875rem;
             transition: all 0.3s ease;
             outline: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .search-bar__input:focus {
@@ -227,10 +227,10 @@
             color: var(--text-muted);
         }
 
-        .search-bar__btn {
+        .btn-action {
             padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, var(--accent), #4f46e5);
-            border: none;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(79, 70, 229, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: white;
             font-family: inherit;
@@ -241,12 +241,35 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            white-space: nowrap;
         }
 
-        .search-bar__btn:hover {
-            background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+        .btn-action:hover {
+            background: linear-gradient(135deg, rgba(129, 140, 248, 0.9), rgba(99, 102, 241, 0.9));
             box-shadow: 0 4px 16px var(--accent-glow);
             transform: translateY(-1px);
+        }
+
+        .upload-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .upload-form label {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+        
+        .upload-form label:hover {
+            background: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
         }
 
         /* Table */
@@ -256,6 +279,8 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
         }
 
         .table-scroll {
@@ -265,7 +290,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 900px;
+            table-layout: fixed;
         }
 
         thead {
@@ -564,27 +589,158 @@
         /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 0.75rem;
             }
 
             .page-header__top {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
+                gap: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.1rem;
             }
 
             .stats-grid {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
             }
 
-            .page-header h1 {
-                font-size: 1.25rem;
+            .stat-card {
+                padding: 0.75rem 1rem;
+            }
+
+            .stat-card__value {
+                font-size: 1.5rem;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .search-bar {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .upload-form {
+                width: 100%;
+            }
+
+            .upload-form label {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* ─── Card layout for table on mobile ─── */
+            .table-scroll {
+                overflow-x: unset;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            /* Hide desktop thead */
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tbody tr {
+                background: var(--bg-card);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                margin-bottom: 0.85rem;
+                padding: 0.85rem 1rem;
+            }
+
+            tbody tr:hover {
+                background: var(--bg-card-hover);
+            }
+
+            td {
+                display: flex;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding: 0.35rem 0;
+                border: none;
+                font-size: 0.83rem;
+            }
+
+            /* Label before each cell */
+            td::before {
+                content: attr(data-label);
+                font-size: 0.68rem;
+                font-weight: 600;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                min-width: 90px;
+                flex-shrink: 0;
+                padding-top: 0.15rem;
+            }
+
+            /* Hide row number on mobile */
+            td.cell-row-num {
+                display: none;
+            }
+
+            /* Actions cell: 2 buttons side by side */
+            td:last-child > div {
+                flex-direction: row;
+                gap: 0.4rem;
+                flex-wrap: wrap;
+            }
+
+            .btn-generate {
+                flex: 1;
+                min-width: 0;
+                justify-content: center;
+                padding: 0.5rem 0.4rem;
+                font-size: 0.72rem;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .btn-generate__text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        @if(session('success'))
+            <div style="background: var(--success-bg); color: var(--success); padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid var(--success);">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div style="background: var(--danger); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div style="background: var(--danger); color: white; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Header -->
         <div class="page-header">
             <div class="page-header__top">
@@ -614,29 +770,50 @@
             </div>
         </div>
 
-        <!-- Search -->
-        <form class="search-bar" method="GET" action="{{ route('contracts.index') }}">
-            <div class="search-bar__input-wrapper">
-                <span class="search-bar__icon">🔍</span>
-                <input
-                    type="text"
-                    name="search"
-                    class="search-bar__input"
-                    placeholder="Tìm kiếm theo tên KOC, username, sản phẩm..."
-                    value="{{ $search ?? '' }}"
-                    id="search-input"
-                >
-            </div>
-            <button type="submit" class="search-bar__btn">
-                <span>Tìm kiếm</span>
-            </button>
-        </form>
+        <!-- Controls -->
+        <div class="controls-container">
+            <form class="search-bar" method="GET" action="{{ route('contracts.index') }}">
+                <div class="search-bar__input-wrapper">
+                    <span class="search-bar__icon">🔍</span>
+                    <input
+                        type="text"
+                        name="search"
+                        class="search-bar__input"
+                        placeholder="Tìm kiếm theo tên KOC, username, sản phẩm..."
+                        value="{{ $search ?? '' }}"
+                        id="search-input"
+                    >
+                </div>
+                <button type="submit" class="btn-action">
+                    <span>Tìm kiếm</span>
+                </button>
+            </form>
+
+            <form action="{{ route('contracts.import') }}" method="POST" enctype="multipart/form-data" class="upload-form" id="upload-form">
+                @csrf
+                <input type="file" name="excel_file" id="excel-file" accept=".xlsx,.xls" onchange="document.getElementById('upload-form').submit()">
+                <label for="excel-file" class="btn-action">
+                    <span>📤 Nhập Excel</span>
+                </label>
+            </form>
+        </div>
 
         <!-- Table -->
         <div class="table-wrapper">
             <div class="table-scroll">
                 @if($contracts->count() > 0)
                 <table>
+                    <colgroup>
+                        <col style="width:3%">   {{-- # --}}
+                        <col style="width:7%">   {{-- Ngày --}}
+                        <col style="width:16%">  {{-- Tên KOC --}}
+                        <col style="width:11%">  {{-- TikTok --}}
+                        <col style="width:13%">  {{-- Sản phẩm --}}
+                        <col style="width:15%">  {{-- Hạng mục --}}
+                        <col style="width:10%">  {{-- Giá trị --}}
+                        <col style="width:10%">  {{-- Link Video --}}
+                        <col style="width:15%">  {{-- Thao tác --}}
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>#</th>
@@ -644,10 +821,9 @@
                             <th>Tên KOC</th>
                             <th>TikTok</th>
                             <th>Sản phẩm</th>
-                            <th>Hạng mục</th>
+                            <th class="col-hide-mobile">Hạng mục</th>
                             <th>Giá trị HĐ</th>
-                            <th>Số HĐ</th>
-                            <th>Trạng thái</th>
+                            <th>Link Video</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -655,15 +831,15 @@
                         @foreach($contracts as $index => $contract)
                         <tr id="row-{{ $contract->id }}">
                             <td class="cell-row-num">{{ $index + 1 }}</td>
-                            <td class="cell-date">{{ $contract->contract_date ? $contract->contract_date->format('d/m/Y') : '-' }}</td>
-                            <td>
+                            <td class="cell-date" data-label="Ngày">{{ $contract->contract_date ? $contract->contract_date->format('d/m/Y') : '-' }}</td>
+                            <td data-label="Tên KOC">
                                 <div class="cell-name">{{ $contract->full_name ?? $contract->koc_name ?? '-' }}</div>
                                 <div class="cell-name__sub info-popover">
                                     <span class="info-popover__trigger">ℹ️ Xem thông tin</span>
                                     <div class="info-popover__content">{{ $contract->personal_info_raw }}</div>
                                 </div>
                             </td>
-                            <td class="cell-username">
+                            <td class="cell-username" data-label="TikTok">
                                 @if($contract->tiktok_url)
                                     <a href="{{ $contract->tiktok_url }}" target="_blank" rel="noopener">
                                         &#64;{{ $contract->tiktok_username }}
@@ -672,7 +848,7 @@
                                     &#64;{{ $contract->tiktok_username }}
                                 @endif
                             </td>
-                            <td>
+                            <td data-label="Sản phẩm">
                                 <div class="cell-product">
                                     @if($contract->product)
                                         <span class="tag">{{ $contract->product }}</span>
@@ -681,33 +857,30 @@
                                     @endif
                                 </div>
                             </td>
-                            <td>
+                            <td data-label="Hạng mục">
                                 @if($contract->category)
                                     <span class="tag tag--category">{{ Str::limit($contract->category, 30) }}</span>
                                 @else
                                     <span style="color: var(--text-muted)">-</span>
                                 @endif
                             </td>
-                            <td class="cell-amount">
+                            <td class="cell-amount" data-label="Giá trị HĐ">
                                 {{ $contract->amount_raw ? number_format((int)str_replace([',', '.'], '', $contract->amount_raw)) : '-' }}
                             </td>
-                            <td style="color: var(--text-secondary); font-size: 0.8rem;">
-                                {{ $contract->contract_number ?: '-' }}
-                            </td>
-                            <td>
-                                @if($contract->is_generated)
-                                    <span class="badge badge--done">
-                                        <span class="badge__dot"></span>
-                                        Đã tạo
-                                    </span>
+                            <td data-label="Link Video" style="text-align:left;">
+                                @if($contract->tiktok_video_url)
+                                    <a href="{{ $contract->tiktok_video_url }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       title="{{ $contract->tiktok_video_url }}"
+                                       style="display:inline-flex;align-items:center;gap:0.35rem;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:0.35rem 0.65rem;color:var(--text-primary);font-size:0.75rem;text-decoration:none;transition:all 0.2s;white-space:nowrap;">
+                                        🎵 Xem video
+                                    </a>
                                 @else
-                                    <span class="badge badge--pending">
-                                        <span class="badge__dot"></span>
-                                        Chưa tạo
-                                    </span>
+                                    <span style="color:var(--text-muted)">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td data-label="Thao tác">
                                 <div style="display: flex; gap: 0.5rem; align-items: center;">
                                     <a
                                         href="{{ route('contracts.generate', $contract->id) }}"
